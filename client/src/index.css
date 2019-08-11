@@ -1,0 +1,11 @@
+
+.content {
+  background-color: yellow;
+}
+
+.footer {
+  margin: auto;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}

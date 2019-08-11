@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  text-align: center;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  min-width: 100%;
+}
+
+.main {
+  margin: 8px;
+  flex-grow: 1;
+}
