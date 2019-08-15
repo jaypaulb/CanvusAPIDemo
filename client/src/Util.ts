@@ -30,22 +30,26 @@ export function uploadNote(
   onSuccess: (msg: string) => void,
   onError: (msg: string) => void) {
 
-    const endpoint = baseUrl + '/api/v1/canvases/' + canvas + '/notes';
+    findMaxDepth(canvas).then(depth => {
 
-    const postData = {
-      text: text,
-      background_color: 'yellow'
-    };
+      const endpoint = baseUrl + '/api/v1/canvases/' + canvas + '/notes';
 
-    const postConfig = {
-      headers: { Accept: 'application/json' }
-    };
+      const postData = {
+        text: text,
+        background_color: '#ffde03',
+        depth: depth + 1
+      };
 
-    axios.post(endpoint, postData, postConfig)
-    .then(response => {
-      onSuccess('Note uploaded.');
-    }).catch(error => {
-      onError(error.toString());
+      const postConfig = {
+        headers: { Accept: 'application/json' }
+      };
+
+      axios.post(endpoint, postData, postConfig)
+      .then(response => {
+        onSuccess('Note uploaded.');
+      }).catch(error => {
+        onError(error.toString());
+      });
     });
 }
 
@@ -55,28 +59,52 @@ export function uploadFile(
   onSuccess: (msg: string) => void,
   onError: (msg: string) => void) {
 
-    var endpoint = '';
+    findMaxDepth(canvas).then(depth => {
 
-    if (/^image\//i.test(file.type))
-      endpoint = 'images';
-    else if (/^video\//i.test(file.type))
-      endpoint = 'videos';
-    else if (file.type === 'application/pdf')
-      endpoint = 'pdfs';
+      var endpoint = '';
 
-    const url = baseUrl + '/api/v1/canvases/' + canvas + '/' + endpoint;
+      if (/^image\//i.test(file.type))
+        endpoint = 'images';
+      else if (/^video\//i.test(file.type))
+        endpoint = 'videos';
+      else if (file.type === 'application/pdf')
+        endpoint = 'pdfs';
 
-    var formData = new FormData();
-    formData.append('data', file);
+      const url = baseUrl + '/api/v1/canvases/' + canvas + '/' + endpoint;
 
-    const postConfig = {
-      headers: { 'content-type': 'multipart/form-data' }
-    }
+      var payload = {
+        depth: depth + 1
+      };
 
-    axios.post(url, formData, postConfig)
-    .then(response => {
-      onSuccess('File uploaded.');
-    }).catch(error => {
-      onError(error.toString());
+      var formData = new FormData();
+      formData.append('data', file);
+      formData.append('json', JSON.stringify(payload));
+
+      const postConfig = {
+        headers: { 'content-type': 'multipart/form-data' }
+      }
+
+      axios.post(url, formData, postConfig)
+      .then(response => {
+        onSuccess('File uploaded.');
+      }).catch(error => {
+        onError(error.toString());
+      });
     });
+}
+
+export async function findMaxDepth(canvas: string) {
+
+  const url = baseUrl + '/api/v1/canvases/' + canvas + '/widgets';
+
+  try {
+    const response = await axios.get(url, {
+      headers: { Accept: 'application/json' }
+    });
+    const widgets = response.data;
+    return Math.max.apply(Math, widgets.map(function (w: any) { return w.depth; }));
+  } catch (error) {
+    console.error("Failed to find max depth.");
+    return 0;
+  }
 }

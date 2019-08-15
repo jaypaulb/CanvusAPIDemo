@@ -1,8 +1,6 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import Swiper from 'react-id-swiper';
 import Note from './Note';
-import { Divider } from '@material-ui/core';
 
 interface State {
   swiper: any
@@ -11,10 +9,9 @@ interface State {
 
 interface Props {
   onUploadNote(text: string): void
-  onUploadFile(file: File): void
 }
 
-class Upload extends React.Component<Props, State> {
+class UploadNote extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
@@ -26,15 +23,12 @@ class Upload extends React.Component<Props, State> {
   }
 
   acquireSwiper = (s: any) => {
-    console.log("swiper set");
     this.setState((state, props) => ({
       swiper: s
     }));
   }
 
   onSlideChange = () => {
-    console.log('slide changed');
-
     var swiper = this.state.swiper;
 
     if(swiper !== null) {
@@ -68,25 +62,11 @@ class Upload extends React.Component<Props, State> {
       spaceBetween: 30
     }
 
-    const callback = (event : any) => this.props.onUploadFile(event.target.files[0]);
-
     return (
       <div>
-        <input
-          id="raised-button-file"
-          accept="image/*,video/*,application/pdf"
-          type="file"
-          hidden
-          onChange={callback}
-        />
-
-        <div>
-          <label htmlFor="raised-button-file">
-            <Button component="span" color="primary" variant="contained">Upload File</Button>
-          </label>
+        <div className="instructions">
+        Type notes below and swipe up to upload.
         </div>
-
-        <Divider />
 
         <Swiper
           {...swiperParams}
@@ -94,10 +74,10 @@ class Upload extends React.Component<Props, State> {
         >
           <Note onTextChange={this.onNoteTextChange} text={this.state.noteText} />
           <Note text='' onTextChange={this.onNoteTextChange} disabled />
-       </Swiper>
+        </Swiper>
       </div>
     )
   }
 }
 
-export default Upload;
+export default UploadNote;

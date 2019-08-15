@@ -2,11 +2,11 @@ import React from 'react';
 import './App.css';
 import Footer from './Footer';
 import Header from './Header';
-import ServerSelect from './ServerSelect';
 import CanvasSelect from './CanvasSelect';
 import { canvasList, Canvas, uploadNote, uploadFile } from './Util';
 import CustomSnackbar from './CustomSnackbar';
-import Upload from './Upload';
+import UploadFile from './UploadFile';
+import UploadNote from './UploadNote';
 
 interface State {
   activeStep: number,
@@ -21,7 +21,7 @@ interface State {
 
 class App extends React.Component<any, State> {
 
-  readonly titles : string[] = ['Select server', 'Select canvas', 'Upload'];
+  readonly titles : string[] = ['Select canvas', 'Upload File', 'Upload Note'];
 
   constructor(props: any) {
     super(props);
@@ -35,6 +35,10 @@ class App extends React.Component<any, State> {
       activeCanvas: '',
       canvasList: [],
     }
+  }
+
+  componentDidMount = () => {
+    canvasList(this.onCanvasListLoaded, this.onError);
   }
 
   handleBack = () => {
@@ -57,7 +61,6 @@ class App extends React.Component<any, State> {
       canvasList: canvases,
       activeCanvas: firstCanvas
     }));
-    this.nextStep();
   }
 
   onError = (message : string) => {
@@ -86,9 +89,6 @@ class App extends React.Component<any, State> {
   handleNext = () => {
 
     switch(this.state.activeStep) {
-      case 0:
-        canvasList(this.onCanvasListLoaded, this.onError);
-        break;
       default:
         this.nextStep();
         break;
@@ -118,11 +118,11 @@ class App extends React.Component<any, State> {
   stepContent = (step : number) => {
     switch(step) {
       case 0:
-        return <ServerSelect serverUrl={this.state.serverUrl} onServerUrlChange={this.handleServerUrlChange} />
-      case 1:
         return <CanvasSelect activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
+      case 1:
+        return <UploadFile onUploadFile={this.handleUploadFile} />
       case 2:
-        return <Upload onUploadNote={this.handleUploadNote} onUploadFile={this.handleUploadFile} />
+        return <UploadNote onUploadNote={this.handleUploadNote} />
       default:
         return <div>Unknown</div>
     }

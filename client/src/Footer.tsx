@@ -16,7 +16,7 @@ class Footer extends React.Component<Props, any> {
     return (
       <MobileStepper
       variant="dots"
-      steps={4}
+      steps={3}
       position="static"
       activeStep={this.props.activeStep}
       className="footer"
