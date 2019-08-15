@@ -1,17 +1,24 @@
 import axios from 'axios';
 
+const baseUrl = '';
+
+export interface Canvas {
+  id: string,
+  state: string,
+  name: string
+}
+
 export function canvasList(
-  onSuccess: (json : object) => any,
+  onSuccess: (canvases : Array<Canvas>) => any,
   onError: (msg : string) => any) {
 
-  //const endpoint = serverUrl + '/api/v1/canvases';
-  const endpoint = '/api/v1/canvases';
+  const endpoint = baseUrl + '/api/v1/canvases';
 
   axios.get(endpoint, {
     headers: { Accept: 'application/json' }
   })
   .then(response => {
-    onSuccess(response.data);
+    onSuccess(response.data as Array<Canvas>);
   }).catch(error => {
     onError(error.toString());
   });

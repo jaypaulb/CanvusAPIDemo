@@ -3,14 +3,18 @@ import './App.css';
 import Footer from './Footer';
 import Header from './Header';
 import ServerSelect from './ServerSelect';
-import { canvasList } from './Util';
+import CanvasSelect from './CanvasSelect';
+import { canvasList, Canvas } from './Util';
 import CustomSnackbar from './CustomSnackbar';
 
 interface State {
   activeStep: number,
   serverUrl : string,
   snackbarVisible: boolean,
-  snackbarMessage: string
+  snackbarMessage: string,
+
+  activeCanvas: string,
+  canvasList: Array<Canvas>
 }
 
 class App extends React.Component<any, State> {
@@ -22,9 +26,11 @@ class App extends React.Component<any, State> {
 
     this.state = {
       activeStep: 0,
-      serverUrl: 'http://localhost:3000',
+      serverUrl: 'http://localhost:8000',
       snackbarVisible: false,
-      snackbarMessage: ''
+      snackbarMessage: '',
+      activeCanvas: '',
+      canvasList: []
     }
   }
 
@@ -40,8 +46,14 @@ class App extends React.Component<any, State> {
     }));
   }
 
-  onCanvasListLoaded = (canvases : object) => {
-    console.log(canvases);
+  onCanvasListLoaded = (canvases : Array<Canvas>) => {
+    // Select the first canvas by default when new canvas list is loaded
+    const firstCanvas = canvases.length > 0 ? canvases[0].id : '';
+
+    this.setState((state, props) => ({
+      canvasList: canvases,
+      activeCanvas: firstCanvas
+    }));
     this.nextStep();
   }
 
@@ -75,10 +87,18 @@ class App extends React.Component<any, State> {
     }));
   }
 
+  handleCanvasChange = (canvas : string) => {
+    this.setState((state, props) => ({
+      activeCanvas: canvas
+    }));
+  }
+
   stepContent = (step : number) => {
     switch(step) {
       case 0:
         return <ServerSelect serverUrl={this.state.serverUrl} onServerUrlChange={this.handleServerUrlChange} />
+      case 1:
+        return <CanvasSelect activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
       default:
         return <div>Unknown</div>
     }
