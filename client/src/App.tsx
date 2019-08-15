@@ -4,22 +4,24 @@ import Footer from './Footer';
 import Header from './Header';
 import ServerSelect from './ServerSelect';
 import CanvasSelect from './CanvasSelect';
-import { canvasList, Canvas } from './Util';
+import { canvasList, Canvas, uploadNote, uploadFile } from './Util';
 import CustomSnackbar from './CustomSnackbar';
+import Upload from './Upload';
 
 interface State {
   activeStep: number,
   serverUrl : string,
   snackbarVisible: boolean,
   snackbarMessage: string,
+  snackbarVariant: 'success' | 'error',
 
   activeCanvas: string,
-  canvasList: Array<Canvas>
+  canvasList: Array<Canvas>,
 }
 
 class App extends React.Component<any, State> {
 
-  readonly titles : string[] = ['Select server', 'Select canvas', 'Note', 'Upload'];
+  readonly titles : string[] = ['Select server', 'Select canvas', 'Upload'];
 
   constructor(props: any) {
     super(props);
@@ -29,8 +31,9 @@ class App extends React.Component<any, State> {
       serverUrl: 'http://localhost:8000',
       snackbarVisible: false,
       snackbarMessage: '',
+      snackbarVariant: 'success',
       activeCanvas: '',
-      canvasList: []
+      canvasList: [],
     }
   }
 
@@ -60,7 +63,16 @@ class App extends React.Component<any, State> {
   onError = (message : string) => {
     this.setState((state, props) => ({
       snackbarMessage: message,
-      snackbarVisible: true
+      snackbarVisible: true,
+      snackbarVariant: 'error'
+    }));
+  }
+
+  onSuccess = (message: string) => {
+    this.setState((state, props) => ({
+      snackbarMessage: message,
+      snackbarVisible: true,
+      snackbarVariant: 'success'
     }));
   }
 
@@ -77,8 +89,10 @@ class App extends React.Component<any, State> {
       case 0:
         canvasList(this.onCanvasListLoaded, this.onError);
         break;
+      default:
+        this.nextStep();
+        break;
     }
-
   }
 
   handleServerUrlChange = (url : string) => {
@@ -93,12 +107,22 @@ class App extends React.Component<any, State> {
     }));
   }
 
+  handleUploadNote = (text: string) => {
+    uploadNote(text, this.state.activeCanvas, this.onSuccess, this.onError);
+  }
+
+  handleUploadFile = (file: File) => {
+    uploadFile(file, this.state.activeCanvas, this.onSuccess, this.onError);
+  }
+
   stepContent = (step : number) => {
     switch(step) {
       case 0:
         return <ServerSelect serverUrl={this.state.serverUrl} onServerUrlChange={this.handleServerUrlChange} />
       case 1:
         return <CanvasSelect activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
+      case 2:
+        return <Upload onUploadNote={this.handleUploadNote} onUploadFile={this.handleUploadFile} />
       default:
         return <div>Unknown</div>
     }
@@ -113,6 +137,7 @@ class App extends React.Component<any, State> {
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css" />
 
         <Header title={titleText} />
 
@@ -125,7 +150,7 @@ class App extends React.Component<any, State> {
         <CustomSnackbar
           open={this.state.snackbarVisible}
           message={this.state.snackbarMessage}
-          variant='error'
+          variant={this.state.snackbarVariant}
           onCloseSnackbar={this.onCloseSnackbar}
         />
       </div>

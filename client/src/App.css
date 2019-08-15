@@ -17,3 +17,18 @@ body {
   margin: 8px;
   flex-grow: 1;
 }
+
+.swiper-container {
+  margin-top: 30px !important;
+}
+
+.swiper-wrapper > .canvus-note {
+  margin: auto;
+  width: 400px;
+  height: 400px !important;
+  background-color: yellow;
+}
+
+.swiper-container {
+  height: 400px !important;
+}

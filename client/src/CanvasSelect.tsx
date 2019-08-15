@@ -16,9 +16,6 @@ class CanvasSelect extends React.Component<Props, any> {
     const canvases = this.props.canvasList;
     const callback = (event : any) => this.props.onCanvasChange(event.target.value);
 
-    console.log("CanvasSelect: ");
-    console.log(canvases);
-
     return (
       <Select value={activeCanvas} onChange={callback}>
           {canvases.map((canvas, index) => {
