@@ -34,5 +34,6 @@ publish:
   script:
     - zcat image.tar.gz | docker load
     - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID
+    - docker tag $CI_REGISTRY_IMAGE:$CI_PIPELINE_IID $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:latest
   when: manual
