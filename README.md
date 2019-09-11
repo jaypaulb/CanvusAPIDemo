@@ -4,6 +4,11 @@ The project consists of two parts: `client` is a client-side react application
 that implements the UI. `server` is a simple express web server that hosts the
 client and proxies API calls to Canvus server.
 
+# Requirements
+
+* Canvus server with API access enabled
+* API access should be unauthenticated (no access token support)
+
 # Development
 
 * `cd client && npm run-script build`
@@ -23,7 +28,6 @@ Use Docker and `docker-compose`.
 
 ```
 CANVUS_SERVER_URL=https://canvus.example.com:8090
-ACCESS_TOKEN=
 ```
 
 * Run the application with `docker-compose up -d`
