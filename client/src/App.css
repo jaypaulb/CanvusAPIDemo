@@ -18,6 +18,12 @@ body {
   flex-grow: 1;
 }
 
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
 .swiper-container {
   margin-top: 30px !important;
 }
