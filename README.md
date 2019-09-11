@@ -12,13 +12,15 @@ client and proxies API calls to Canvus server.
 
 # Production
 
+Use Docker and `docker-compose`.
+
 * Copy `ci/docker-compose.yml` to some folder where you want to host the
   application
 * Create an `env` file to the same folder with `docker-compose.yml` to define
   parameters for the application:
 
 ```
-CANVUS_SERVER_URL=https://robin.multitaction.com:8090
+CANVUS_SERVER_URL=https://canvus.example.com:8090
 ACCESS_TOKEN=
 ```
 
