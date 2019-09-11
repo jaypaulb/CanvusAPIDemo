@@ -10,6 +10,8 @@ client and proxies API calls to Canvus server.
 * `cd ../server && ln -s ../client/public`
 * `npm run-script dev`
 
+The application is reachable at `http://localhost:5000`.
+
 # Production
 
 Use Docker and `docker-compose`.
@@ -26,3 +28,5 @@ ACCESS_TOKEN=
 
 * Run the application with `docker-compose up -d`
 * Stop the application with `docker-compose down`
+
+The application is reachable at `http://localhost:5000`.
