@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+
+  app:
+    container_name: canvus_restapi_demo
+    image: test:latest
+    restart: always
+    ports:
+    - "5000:5000"
+    volumes:
+      - ./env:/app/.env:ro
