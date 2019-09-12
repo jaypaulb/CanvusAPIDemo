@@ -11,9 +11,18 @@ client and proxies API calls to Canvus server.
 
 # Development
 
-* `cd client && npm run-script build`
-* `cd ../server && ln -s ../client/public`
-* `npm run-script dev`
+You need new enough nodejs. Project was developed with v10.16.3.
+
+Create a configuration file `server/.env` to match your Canvus server:
+
+```
+CANVUS_SERVER_URL=https://canvus.example.com:8090
+ACCESS_TOKEN=<access token>
+```
+
+* `cd client && npm install && npm run-script build`
+* `cd ../server && ln -s ../client/build public`
+* `npm install && npm run-script dev`
 
 The application is reachable at `http://localhost:5000`.
 
@@ -28,6 +37,7 @@ Use Docker and `docker-compose`.
 
 ```
 CANVUS_SERVER_URL=https://canvus.example.com:8090
+ACCESS_TOKEN=<access token>
 ```
 
 * Run the application with `docker-compose up -d`
