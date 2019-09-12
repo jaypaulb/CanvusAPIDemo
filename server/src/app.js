@@ -12,7 +12,7 @@ app.use(express.static('public'));
 app.use('/', proxy(apiUrl, {
   limit: '100mb',
   proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-    proxyReqOpts.headers = {"Private-Token": accessToken};
+    proxyReqOpts.headers["Private-Token"] = accessToken;
     return proxyReqOpts;
   }
 }));
