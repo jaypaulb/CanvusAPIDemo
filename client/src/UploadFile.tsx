@@ -1,8 +1,10 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 interface Props {
-  onUploadFile(file: File): void
+  onUploadFile(file: File): void,
+  uploadProgress: number
 }
 
 class UploadFile extends React.Component<Props, any> {
@@ -26,6 +28,8 @@ class UploadFile extends React.Component<Props, any> {
             <Button component="span" color="primary" variant="contained">Upload File</Button>
           </label>
         </div>
+        <br />
+        <LinearProgress variant="determinate" value={this.props.uploadProgress} />
       </div>
     )
   }

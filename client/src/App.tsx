@@ -17,6 +17,8 @@ interface State {
 
   activeCanvas: string,
   canvasList: Array<Canvas>,
+
+  uploadProgress: number
 }
 
 class App extends React.Component<any, State> {
@@ -34,6 +36,7 @@ class App extends React.Component<any, State> {
       snackbarVariant: 'success',
       activeCanvas: '',
       canvasList: [],
+      uploadProgress: 0
     }
   }
 
@@ -67,7 +70,9 @@ class App extends React.Component<any, State> {
     this.setState((state, props) => ({
       snackbarMessage: message,
       snackbarVisible: true,
-      snackbarVariant: 'error'
+      snackbarVariant: 'error',
+      // Hack to reset upload progress (should be somewhere else)
+      uploadProgress: 0
     }));
   }
 
@@ -75,7 +80,9 @@ class App extends React.Component<any, State> {
     this.setState((state, props) => ({
       snackbarMessage: message,
       snackbarVisible: true,
-      snackbarVariant: 'success'
+      snackbarVariant: 'success',
+      // Hack to reset upload progress (should be somewhere else)
+      uploadProgress: 0
     }));
   }
 
@@ -83,6 +90,13 @@ class App extends React.Component<any, State> {
     this.setState((state, props) => ({
       snackbarMessage: '',
       snackbarVisible: false
+    }));
+  }
+
+  onUploadProgress = (progressEvent: any) => {
+    var percentCompleted: number = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    this.setState((state, props) => ({
+      uploadProgress: percentCompleted
     }));
   }
 
@@ -112,7 +126,7 @@ class App extends React.Component<any, State> {
   }
 
   handleUploadFile = (file: File) => {
-    uploadFile(file, this.state.activeCanvas, this.onSuccess, this.onError);
+    uploadFile(file, this.state.activeCanvas, this.onSuccess, this.onError, this.onUploadProgress);
   }
 
   stepContent = (step : number) => {
@@ -120,7 +134,7 @@ class App extends React.Component<any, State> {
       case 0:
         return <CanvasSelect activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
       case 1:
-        return <UploadFile onUploadFile={this.handleUploadFile} />
+        return <UploadFile onUploadFile={this.handleUploadFile} uploadProgress={this.state.uploadProgress} />
       case 2:
         return <UploadNote onUploadNote={this.handleUploadNote} />
       default:

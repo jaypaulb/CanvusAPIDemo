@@ -57,7 +57,8 @@ export function uploadFile(
   file: File,
   canvas: string,
   onSuccess: (msg: string) => void,
-  onError: (msg: string) => void) {
+  onError: (msg: string) => void,
+  onUploadProgress: (progressEvent: any) => void) {
 
     findMaxDepth(canvas).then(depth => {
 
@@ -81,7 +82,8 @@ export function uploadFile(
       formData.append('json', JSON.stringify(payload));
 
       const postConfig = {
-        headers: { 'content-type': 'multipart/form-data' }
+        headers: { 'content-type': 'multipart/form-data' },
+        onUploadProgress: onUploadProgress
       }
 
       axios.post(url, formData, postConfig)
