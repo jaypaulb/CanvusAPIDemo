@@ -2,12 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "@types/jest": "^25.1.1",
-    "@types/node": "^13.5.3",
-    "@types/react": "^16.9.19",
-    "@types/react-dom": "^16.9.5"
-  },
   "dependencies": {
     "@material-ui/core": "^4.9.0",
     "@material-ui/icons": "^4.5.1",
@@ -17,7 +11,11 @@
     "react-id-swiper": "^2.4.0",
     "react-scripts": "^3.3.1",
     "swiper": "^5.3.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "@types/jest": "^25.1.1",
+    "@types/node": "^13.5.3",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
