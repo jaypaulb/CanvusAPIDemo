@@ -7,11 +7,13 @@ client and proxies API calls to Canvus server.
 # Requirements
 
 * Canvus server with API access enabled
-* API access should be unauthenticated (no access token support)
 
 # Development
 
-You need new enough nodejs. Project was developed with v10.16.3.
+You need new enough nodejs. Project was developed with v12.14.1. If you don't
+want to use system nodejs, you can download and setup local toolchain by:
+
+`source toolchain.sh`
 
 Create a configuration file `server/.env` to match your Canvus server:
 
