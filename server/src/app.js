@@ -11,8 +11,9 @@ const app = express();
 app.use(express.static('public'));
 app.use('/', proxy(apiUrl, {
   limit: '100mb',
+  // eslint-disable-next-line
   proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-    proxyReqOpts.headers["Private-Token"] = accessToken;
+    proxyReqOpts.headers['Private-Token'] = accessToken;
     return proxyReqOpts;
   }
 }));
