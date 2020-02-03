@@ -22,11 +22,16 @@ CANVUS_SERVER_URL=https://canvus.example.com:8090
 ACCESS_TOKEN=<access token>
 ```
 
-* `cd client && npm install && npm run-script build`
-* `cd ../server && ln -s ../client/build public`
-* `npm install && npm run-script dev`
+To run the application in development mode, first start the server in one
+terminal:
 
-The application is reachable at `http://localhost:5000`.
+`cd server && npm install && npm run-script dev`
+
+Then in another terminal run the client:
+
+* `cd client && npm install && npm run-script start`
+
+The application is reachable at `http://localhost:3000`.
 
 # Production
 
