@@ -8,6 +8,50 @@ export interface Canvas {
   name: string
 }
 
+export interface CanvusClient {
+  access: string,
+  id: string,
+  installationName: string,
+  state: string,
+  version: string
+}
+
+export interface Geometry {
+  location: {
+    x: number,
+    y: number
+  },
+  scale: number
+}
+
+export class Size {
+  public width: number = -1;
+  public height: number = -1;
+
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+
+  fit(size : Size) : Size {
+
+    const rw = size.height * this.width / this.height;
+    const useHeight : boolean = (rw <= size.width);
+
+    var result = new Size(0, 0);
+
+    if(useHeight) {
+      result.width = rw;
+      result.height = size.height;
+    } else {
+      result.height = size.width * this.height / this.width;
+      result.width = size.width;
+    }
+
+    return result;
+  }
+}
+
 export function canvasList(
   onSuccess: (canvases : Array<Canvas>) => any,
   onError: (msg : string) => any) {
@@ -56,6 +100,7 @@ export function uploadNote(
 export function uploadFile(
   file: File,
   canvas: string,
+  geometry: Geometry | null,
   onSuccess: (msg: string) => void,
   onError: (msg: string) => void,
   onUploadProgress: (progressEvent: any) => void) {
@@ -74,7 +119,8 @@ export function uploadFile(
       const url = baseUrl + '/api/v1/canvases/' + canvas + '/' + endpoint;
 
       var payload = {
-        depth: depth + 1
+        depth: depth + 1,
+        ...geometry
       };
 
       var formData = new FormData();
@@ -93,6 +139,41 @@ export function uploadFile(
         onError(error.toString());
       });
     });
+}
+
+export async function clientList() {
+
+  const url = baseUrl + '/api/v1/clients'
+
+  try {
+    const response = await axios.get(url, {
+      headers: { Accept: 'application/json' }
+    });
+
+    return response.data as Array<CanvusClient>;
+
+  } catch(error) {
+    console.log("Failed to get client list.");
+    return new Array<CanvusClient>();
+  }
+}
+
+export async function workspaceList(client: CanvusClient) {
+
+  const url = baseUrl + '/api/v1/clients/' + client.id + '/workspaces'
+
+  try {
+    const response = await axios.get(url, {
+      headers: { Accept: 'application/json' }
+    });
+
+    return response.data as Array<any>;
+
+  } catch(error) {
+    console.log("Failed to get client list.");
+    return new Array<any>();
+  }
+
 }
 
 export async function findMaxDepth(canvas: string) {
