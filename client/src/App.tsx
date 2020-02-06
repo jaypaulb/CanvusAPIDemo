@@ -122,7 +122,7 @@ class App extends React.Component<any, State> {
     clientList().then(clients => {
 
       if(clients.length === 0)
-        return Promise.reject();
+        return Promise.reject("no clients available on server.");
 
       // Always assume first client
       return clients[0];
@@ -153,8 +153,8 @@ class App extends React.Component<any, State> {
       };
 
       uploadFile(file, this.state.activeCanvas, geometry, this.onSuccess, this.onError, this.onUploadProgress);
-    }).catch(e => {
-      console.log("Upload to canvas failed.");
+    }).catch(error => {
+      console.log("Upload to canvas failed: " + error);
     });
   }
 
