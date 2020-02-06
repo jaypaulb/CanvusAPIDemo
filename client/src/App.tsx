@@ -3,7 +3,7 @@ import './App.css';
 import Footer from './Footer';
 import Header from './Header';
 import CanvasSelect from './CanvasSelect';
-import { canvasList, Canvas, uploadNote, uploadFile, clientList, workspaceList, Geometry, Size } from './Util';
+import { canvasList, Canvas, demoUploadFile, demoUploadNote } from './Util';
 import CustomSnackbar from './CustomSnackbar';
 import UploadFile from './UploadFile';
 import UploadNote from './UploadNote';
@@ -114,47 +114,14 @@ class App extends React.Component<any, State> {
   }
 
   handleUploadNote = (text: string) => {
-    uploadNote(text, this.state.activeCanvas, this.onSuccess, this.onError);
+    demoUploadNote(text, this.state.activeCanvas, this.onSuccess, this.onError).catch(e => {
+      console.log("Uploading note failed: " + e);
+    });
   }
 
   handleUploadFile = (file: File) => {
-
-    clientList().then(clients => {
-
-      if(clients.length === 0)
-        return Promise.reject("no clients available on server.");
-
-      // Always assume first client
-      return clients[0];
-    }).then(client => { return workspaceList(client)
-    }).then(workspaces => {
-
-      // Sort workspaces by their index (left-to-right)
-      workspaces.sort((a, b) => { return a.index - b.index; });
-
-      // Assume last workspace (right-most)
-      const targetWorkspace = workspaces[workspaces.length - 1];
-
-      // Assume the upload file is of certain size since we don't have an easy
-      // to way to determine it for arbitrary content.
-      const uploadDimensions = new Size(1920, 1080);
-      const targetDimensions = new Size(targetWorkspace.view_rectangle.width, targetWorkspace.view_rectangle.height);
-
-      // Calculate scaling to fit inside the workspace
-      const fitted = uploadDimensions.fit(targetDimensions);
-      const s = fitted.width / uploadDimensions.width;
-
-      const geometry : Geometry = {
-        location: {
-          x: targetWorkspace.view_rectangle.x,
-          y: targetWorkspace.view_rectangle.y
-        },
-        scale: s
-      };
-
-      uploadFile(file, this.state.activeCanvas, geometry, this.onSuccess, this.onError, this.onUploadProgress);
-    }).catch(error => {
-      console.log("Upload to canvas failed: " + error);
+    demoUploadFile(file, this.state.activeCanvas, this.onSuccess, this.onError, this.onUploadProgress).catch(e => {
+      console.log("Uploading file failed: " + e);
     });
   }
 

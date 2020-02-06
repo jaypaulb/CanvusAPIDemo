@@ -69,75 +69,58 @@ export function canvasList(
 }
 
 export function uploadNote(
-  text: string,
+  postData: object,
   canvas: string,
   onSuccess: (msg: string) => void,
   onError: (msg: string) => void) {
 
-    findMaxDepth(canvas).then(depth => {
+    const endpoint = baseUrl + '/api/v1/canvases/' + canvas + '/notes';
 
-      const endpoint = baseUrl + '/api/v1/canvases/' + canvas + '/notes';
+    const postConfig = {
+      headers: { Accept: 'application/json' }
+    };
 
-      const postData = {
-        text: text,
-        background_color: '#ffde03',
-        depth: depth + 1
-      };
-
-      const postConfig = {
-        headers: { Accept: 'application/json' }
-      };
-
-      axios.post(endpoint, postData, postConfig)
-      .then(response => {
-        onSuccess('Note uploaded.');
-      }).catch(error => {
-        onError(error.toString());
-      });
+    axios.post(endpoint, postData, postConfig)
+    .then(response => {
+      onSuccess('Note uploaded.');
+    }).catch(error => {
+      onError(error.toString());
     });
 }
 
 export function uploadFile(
   file: File,
   canvas: string,
-  geometry: Geometry | null,
+  postData: object,
   onSuccess: (msg: string) => void,
   onError: (msg: string) => void,
   onUploadProgress: (progressEvent: any) => void) {
 
-    findMaxDepth(canvas).then(depth => {
+    var endpoint = '';
 
-      var endpoint = '';
+    if (/^image\//i.test(file.type))
+      endpoint = 'images';
+    else if (/^video\//i.test(file.type))
+      endpoint = 'videos';
+    else if (file.type === 'application/pdf')
+      endpoint = 'pdfs';
 
-      if (/^image\//i.test(file.type))
-        endpoint = 'images';
-      else if (/^video\//i.test(file.type))
-        endpoint = 'videos';
-      else if (file.type === 'application/pdf')
-        endpoint = 'pdfs';
+    const url = baseUrl + '/api/v1/canvases/' + canvas + '/' + endpoint;
 
-      const url = baseUrl + '/api/v1/canvases/' + canvas + '/' + endpoint;
+    var formData = new FormData();
+    formData.append('data', file);
+    formData.append('json', JSON.stringify(postData));
 
-      var payload = {
-        depth: depth + 1,
-        ...geometry
-      };
+    const postConfig = {
+      headers: { 'content-type': 'multipart/form-data' },
+      onUploadProgress: onUploadProgress
+    }
 
-      var formData = new FormData();
-      formData.append('data', file);
-      formData.append('json', JSON.stringify(payload));
-
-      const postConfig = {
-        headers: { 'content-type': 'multipart/form-data' },
-        onUploadProgress: onUploadProgress
-      }
-
-      axios.post(url, formData, postConfig)
-      .then(response => {
-        onSuccess('File uploaded.');
-      }).catch(error => {
-        onError(error.toString());
-      });
+    axios.post(url, formData, postConfig)
+    .then(response => {
+      onSuccess('File uploaded.');
+    }).catch(error => {
+      onError(error.toString());
     });
 }
 
@@ -190,4 +173,96 @@ export async function findMaxDepth(canvas: string) {
     console.error("Failed to find max depth.");
     return 0;
   }
+}
+
+// Uploads to the first client connected to the server and places the content so
+// it is visible on the upper-left corner of the last (right-most) workspace.
+export async function demoUploadFile( file: File,
+                                      canvasId: string,
+                                      onSuccess: (msg: string) => void,
+                                      onError: (msg: string) => void,
+                                      onUploadProgress: (progressEvent: any) => void) {
+
+  const clients = await clientList();
+
+  if(clients.length === 0)
+    return Promise.reject("no clients available on server.");
+
+  // Always assume first client
+  const client = clients[0];
+
+  // Find a workspace to place the uploaded item so it is visible
+  const workspaces = await workspaceList(client);
+
+  // Sort workspaces by their index (left-to-right)
+  workspaces.sort((a, b) => { return a.index - b.index; });
+
+  // Assume the last (right-most) workspace
+  const workspace = workspaces[workspaces.length - 1];
+
+  // Assume the upload file is of certain size since we don't have an easy
+  // to way to determine it for arbitrary content.
+  const uploadDimensions = new Size(1920, 1080);
+  const targetDimensions = new Size(workspace.view_rectangle.width, workspace.view_rectangle.height);
+
+  // Calculate scaling to fit inside the workspace
+  const fitted = uploadDimensions.fit(targetDimensions);
+  const s = fitted.width / uploadDimensions.width;
+
+  // Get maximum depth to place ensure the uploaded file is on top
+  const depth = await findMaxDepth(canvasId);
+
+  const postData = {
+    location: {
+      x: workspace.view_rectangle.x,
+      y: workspace.view_rectangle.y
+    },
+    scale: s,
+    depth: depth + 1
+  }
+
+  uploadFile(file, canvasId, postData, onSuccess, onError, onUploadProgress);
+}
+
+export async function demoUploadNote(
+  text: string,
+  canvasId: string,
+  onSuccess: (msg: string) => void,
+  onError: (msg: string) => void) {
+
+    const clients = await clientList();
+
+    if(clients.length === 0)
+      return Promise.reject("no clients available on server.");
+
+    // Always assume first client
+    const client = clients[0];
+
+    // Find a workspace to place the uploaded item so it is visible
+    const workspaces = await workspaceList(client);
+
+    // Sort workspaces by their index (left-to-right)
+    workspaces.sort((a, b) => { return a.index - b.index; });
+
+    // Assume the last (right-most) workspace
+    const workspace = workspaces[workspaces.length - 1];
+
+    // Assume the upload file is of certain size since we don't have an easy
+    // to way to determine it for arbitrary content.
+    const uploadDimensions = new Size(300, 300);
+
+    // Get maximum depth to place ensure the uploaded file is on top
+    const depth = await findMaxDepth(canvasId);
+
+    const postData = {
+      text: text,
+      background_color: '#ffde03',
+      location: {
+        x: workspace.view_rectangle.x,
+        y: workspace.view_rectangle.y + workspace.view_rectangle.height - uploadDimensions.height
+      },
+      depth: depth + 1
+    };
+
+    uploadNote(postData, canvasId, onSuccess, onError);
 }
