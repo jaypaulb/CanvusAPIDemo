@@ -5,6 +5,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 interface Props {
+  selectedCanvasId: string;
   activeStep : number,
   handleBack() : void,
   handleNext() : void
@@ -21,7 +22,7 @@ class Footer extends React.Component<Props, any> {
       activeStep={this.props.activeStep}
       className="footer"
       nextButton={
-        <Button size="small" onClick={this.props.handleNext} disabled={this.props.activeStep === 3}>
+        <Button size="small" onClick={this.props.handleNext} disabled={this.props.activeStep === 3 || this.props.selectedCanvasId === ''}>
           Next
           <KeyboardArrowRight />
         </Button>
