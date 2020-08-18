@@ -1,6 +1,10 @@
 #!/bin/bash
 
-NODE_URL=https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  NODE_URL=https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  NODE_URL=https://nodejs.org/dist/v12.18.3/node-v12.18.3-darwin-x64.tar.gz
+fi
 
 # Cleanup
 rm -rf toolchain
