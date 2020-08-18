@@ -9,7 +9,7 @@ interface Props {
   onCanvasChange(canvas: string) : void
 }
 
-class CanvasSelect extends React.Component<Props, any> {
+class CanvasSelectDropdown extends React.Component<Props, any> {
 
   render() {
     const activeCanvas = this.props.activeCanvas;
@@ -28,4 +28,4 @@ class CanvasSelect extends React.Component<Props, any> {
   }
 }
 
-export default CanvasSelect;
+export default CanvasSelectDropdown;

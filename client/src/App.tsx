@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Footer from './Footer';
 import Header from './Header';
-import CanvasSelect from './CanvasSelect';
+import CanvasSelectDropdown from './CanvasSelectDropdown';
 import { canvasList, Canvas, demoUploadFile, demoUploadNote } from './Util';
 import CustomSnackbar from './CustomSnackbar';
 import UploadFile from './UploadFile';
@@ -108,6 +108,7 @@ class App extends React.Component<any, State> {
   }
 
   handleCanvasChange = (canvas : string) => {
+    console.log("SELECT CANVAS: ", canvas);
     this.setState((state, props) => ({
       activeCanvas: canvas
     }));
@@ -128,7 +129,7 @@ class App extends React.Component<any, State> {
   stepContent = (step : number) => {
     switch(step) {
       case 0:
-        return <CanvasSelect activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
+        return <CanvasSelectDropdown activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
       case 1:
         return <UploadFile onUploadFile={this.handleUploadFile} uploadProgress={this.state.uploadProgress} />
       case 2:
