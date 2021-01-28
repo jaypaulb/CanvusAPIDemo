@@ -3,7 +3,7 @@ import './App.css';
 import Footer from './Footer';
 import Header from './Header';
 //import CanvasSelectDropdown from './CanvasSelectDropdown';
-import CanvasSelectJaypaul from './CanvasSelectJaypaul';
+import CanvasSelectSecret from './CanvasSelectSecret';
 import { canvasList, Canvas, demoUploadFile, demoUploadNote } from './Util';
 import CustomSnackbar from './CustomSnackbar';
 import UploadFile from './UploadFile';
@@ -127,7 +127,7 @@ class App extends React.Component<any, State> {
     switch(step) {
       case 0:
         //return <CanvasSelectDropdown activeCanvas={this.state.activeCanvas} canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
-        return <CanvasSelectJaypaul canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
+        return <CanvasSelectSecret canvasList={this.state.canvasList} onCanvasChange={this.handleCanvasChange} />
       case 1:
         return <UploadFile onUploadFile={this.handleUploadFile} uploadProgress={this.state.uploadProgress} />
       case 2:

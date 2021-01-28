@@ -14,7 +14,7 @@ interface State {
   helperText: string;
 }
 
-class CanvasSelectJaypaul extends React.Component<Props, State> {
+class CanvasSelectSecret extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -81,4 +81,4 @@ class CanvasSelectJaypaul extends React.Component<Props, State> {
   }
 }
 
-export default CanvasSelectJaypaul;
+export default CanvasSelectSecret;
