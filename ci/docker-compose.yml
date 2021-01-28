@@ -4,7 +4,7 @@ services:
 
   app:
     container_name: canvus_restapi_demo
-    image: docker.multitaction.com/esa/canvus-api-demo:latest
+    image: canvus-api-demo:latest
     restart: always
     ports:
     - "5000:5000"

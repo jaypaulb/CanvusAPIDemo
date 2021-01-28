@@ -33,7 +33,7 @@ Then in another terminal run the client:
 
 The application is reachable at `http://localhost:3000`.
 
-# Production
+# Deployment
 
 Use Docker and `docker-compose`.
 
